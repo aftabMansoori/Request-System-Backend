@@ -16,6 +16,7 @@ const adminSchema = mongoose.Schema({
   },
   phone: {
     type: Number,
+    unique: true,
     required: true,
   },
   canCreate: {
