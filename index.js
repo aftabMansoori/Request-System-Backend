@@ -8,10 +8,11 @@ connect();
 
 const helmet = require("helmet");
 const morgan = require("morgan");
-const { errorHandling } = require("./utils/errorHandling");
 
 const indexRouter = require("./routes/index.route");
 const userRouter = require("./routes/users.route");
+const requestsRouter = require("./routes/requests.route");
+const { errorHandling } = require("./utils/errorHandling");
 
 const PORT = process.env.PORT || 5000;
 
@@ -21,6 +22,7 @@ app.use(morgan("combined"));
 
 app.use("/", indexRouter);
 app.use("/user", userRouter);
+app.use("/request", requestsRouter);
 errorHandling(app);
 
 app
