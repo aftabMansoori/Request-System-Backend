@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
 require("./User");
+require("./Admin");
+require("./LeaveRequest");
+require("./VideoRequest");
 
 const connect = async function () {
   try {
