@@ -7,7 +7,7 @@ const addUser = async (user) => {
     const addedUser = await User.create(user);
     return addedUser;
   } catch (err) {
-    console.log(err.message);
+    throw err;
   }
 };
 

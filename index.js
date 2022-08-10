@@ -21,7 +21,6 @@ app.use(morgan("combined"));
 
 app.use("/", indexRouter);
 app.use("/user", userRouter);
-
 errorHandling(app);
 
 app
