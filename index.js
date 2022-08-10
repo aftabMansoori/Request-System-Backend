@@ -6,9 +6,9 @@ const app = express();
 const { connect } = require("./models/db");
 connect();
 
-const path = require("path");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const { errorHandling } = require("./utils/errorHandling");
 
 const indexRouter = require("./routes/index.route");
 const userRouter = require("./routes/users.route");
@@ -21,6 +21,8 @@ app.use(morgan("combined"));
 
 app.use("/", indexRouter);
 app.use("/user", userRouter);
+
+errorHandling(app);
 
 app
   .listen(PORT, () => {
