@@ -4,11 +4,13 @@ const { addUser } = require("../services/users.service");
 
 const register = catchAsync(async (req, res) => {
   const user = req.body;
-  if (Object.keys(user).length < 5) {
-    throw new Error("Invalid Inputs");
+
+  if (Object.keys(user).length !== 6) {
+    throw new Error("Invalid body inputs");
   }
 
-  const registeredUser = await addUser(user);
+  let registeredUser = await addUser(user);
+
   res.status(201).json({ status: "success", data: registeredUser });
 });
 

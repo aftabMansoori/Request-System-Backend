@@ -10,11 +10,9 @@ const videoRequestSchema = new mongoose.Schema(
     adminId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Admin",
-      required: true,
     },
     requestedFor: {
       type: Date,
-      default: Date.now,
       required: true,
     },
     videoStatus: {

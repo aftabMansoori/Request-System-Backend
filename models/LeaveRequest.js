@@ -26,7 +26,7 @@ const leaveRequestSchema = new mongoose.Schema(
     },
     requestStatus: {
       type: String,
-      default: "",
+      default: "In Progress",
     },
   },
   { timestamps: true }
