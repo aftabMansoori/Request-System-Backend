@@ -17,7 +17,7 @@ const videoRequestSchema = new mongoose.Schema(
     },
     videoStatus: {
       type: String,
-      default: "In Progress",
+      default: "Requested",
     },
     reason: {
       type: String,

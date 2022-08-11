@@ -20,6 +20,26 @@ const addUser = async (user) => {
   }
 };
 
+const allUsers = async () => {
+  try {
+    const allUsers = await User.find();
+    return allUsers;
+  } catch (err) {
+    throw err;
+  }
+};
+
+const getUserbyId = async (id) => {
+  try {
+    const user = User.findById({ _id: id });
+    return user;
+  } catch (err) {
+    throw err;
+  }
+};
+
 module.exports = {
   addUser,
+  allUsers,
+  getUserbyId,
 };
