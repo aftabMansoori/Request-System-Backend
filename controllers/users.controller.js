@@ -34,7 +34,7 @@ const login = catchAsync(async (req, res) => {
   const user = await usersSv.getUserbyEmail(email);
 
   const isMatch = await bcrypt.compare(password, user.password);
-  console.log(isMatch);
+
   if (isMatch) {
     const claims = {
       role: user.role,
