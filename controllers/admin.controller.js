@@ -1,6 +1,5 @@
 const { catchAsync } = require("../utils/errorHandling");
 
-const usersSv = require("../services/users.service");
 const adminSv = require("../services/admin.service");
 
 const createAdmin = catchAsync(async (req, res) => {
@@ -10,7 +9,7 @@ const createAdmin = catchAsync(async (req, res) => {
     throw new Error("Invalid body inputs");
   }
 
-  let adminCreated = await usersSv.addUser(user);
+  let adminCreated = await adminSv.addUser(user);
 
   res.status(201).json({ status: "success", data: adminCreated });
 });

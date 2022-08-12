@@ -1,10 +1,18 @@
-const { file } = require("googleapis/build/src/apis/file");
-const { ideahub } = require("googleapis/build/src/apis/ideahub");
 const mongoose = require("mongoose");
 
 const gdapi = require("../GoogleDriveApis/GoogleDriveServices");
 
+const Admin = mongoose.model("Admin");
 const Folder = mongoose.model("Folder");
+
+const addUser = async (user) => {
+  try {
+    const addedUser = await Admin.create(user);
+    return addedUser;
+  } catch (err) {
+    throw err;
+  }
+};
 
 const createFolder = async (folderName, parentFolderId) => {
   try {
@@ -43,6 +51,7 @@ const deleteFile = async (id) => {
 // };
 
 module.exports = {
+  addUser,
   createFolder,
   deleteFile,
 };
