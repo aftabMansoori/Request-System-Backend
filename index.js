@@ -12,6 +12,7 @@ const morgan = require("morgan");
 const indexRouter = require("./routes/index.route");
 const userRouter = require("./routes/users.route");
 const requestsRouter = require("./routes/requests.route");
+const adminRouter = require("./routes/admin.route");
 const { errorHandling } = require("./utils/errorHandling");
 
 const PORT = process.env.PORT || 5000;
@@ -23,6 +24,7 @@ app.use(morgan("combined"));
 app.use("/", indexRouter);
 app.use("/user", userRouter);
 app.use("/request", requestsRouter);
+app.use("/admin", adminRouter);
 errorHandling(app);
 
 app
