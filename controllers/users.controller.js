@@ -14,18 +14,6 @@ const register = catchAsync(async (req, res) => {
   res.status(201).json({ status: "success", data: registeredUser });
 });
 
-const createAdmin = catchAsync(async (req, res) => {
-  const user = req.body;
-
-  if (Object.keys(user).length !== 6) {
-    throw new Error("Invalid body inputs");
-  }
-
-  let adminCreated = await usersSv.addUser(user);
-
-  res.status(201).json({ status: "success", data: adminCreated });
-});
-
 const getAllUsers = catchAsync(async (req, res) => {
   const allUsers = await usersSv.allUsers();
 
@@ -41,7 +29,6 @@ const getUserbyId = catchAsync(async (req, res) => {
 
 module.exports = {
   register,
-  createAdmin,
   getAllUsers,
   getUserbyId,
 };
