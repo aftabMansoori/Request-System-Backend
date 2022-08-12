@@ -1,10 +1,9 @@
 const mongoose = require("mongoose");
 
-const VideoRequest = mongoose.model("VideoRequest");
-const LeaveRequest = mongoose.model("LeaveRequest");
 const User = mongoose.model("User");
+const Requests = mongoose.model("Requests");
 
-const videoRequest = async (request) => {
+const createRequest = async (request) => {
   try {
     const user = await User.findById(request.userId);
 
@@ -12,69 +11,50 @@ const videoRequest = async (request) => {
       throw new Error("User doesn't exist");
     }
 
-    const videoRequested = await VideoRequest.create(request);
-    return videoRequested;
-  } catch (err) {
-    throw err;
-  }
-};
-
-const getAllVideoRequests = async () => {
-  try {
-    const videoRequests = await VideoRequest.find();
-    return videoRequests;
-  } catch (err) {
-    throw err;
-  }
-};
-
-const getUserVideoRequests = async (id) => {
-  try {
-    const userVideoRequests = await VideoRequest.find({ userId: id });
-    return userVideoRequests;
-  } catch (err) {
-    throw err;
-  }
-};
-
-const leaveRequest = async (request) => {
-  try {
-    const user = await User.findById(request.userId);
-
-    if (!user) {
-      throw new Error("User doesn't exist");
+    if (request.type === "leave" && !request.endDate) {
+      throw new Error("End Date is required");
     }
 
-    const leaveRequested = await LeaveRequest.create(request);
-    return leaveRequested;
+    const createdRequested = await Requests.create(request);
+    return createdRequested;
   } catch (err) {
     throw err;
   }
 };
 
-const getAllLeaveRequests = async () => {
+const getRequests = async (type) => {
   try {
-    const videoRequests = await LeaveRequest.find();
-    return videoRequests;
+    let allRequests;
+    if (type) {
+      allRequests = await Requests.find({ type });
+    } else {
+      allRequests = await Requests.find();
+    }
+
+    return allRequests;
   } catch (err) {
     throw err;
   }
 };
 
-const getUserLeaveRequests = async (id) => {
+const getRequestsByUserId = async (id, type) => {
   try {
-    const userLeaveRequests = await LeaveRequest.find({ userId: id });
-    return userLeaveRequests;
+    let userRequests;
+
+    if (type) {
+      userRequests = await Requests.find({ $and: [{ userId: id }, { type }] });
+    } else {
+      userRequests = await Requests.find({ userId: id });
+    }
+
+    return userRequests;
   } catch (err) {
     throw err;
   }
 };
 
 module.exports = {
-  videoRequest,
-  getAllVideoRequests,
-  getUserVideoRequests,
-  leaveRequest,
-  getAllLeaveRequests,
-  getUserLeaveRequests,
+  createRequest,
+  getRequests,
+  getRequestsByUserId,
 };

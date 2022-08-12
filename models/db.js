@@ -2,8 +2,7 @@ const mongoose = require("mongoose");
 
 require("./User");
 require("./Admin");
-require("./LeaveRequest");
-require("./VideoRequest");
+require("./Requests");
 
 const connect = async function () {
   try {
