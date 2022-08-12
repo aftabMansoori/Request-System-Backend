@@ -22,8 +22,19 @@ const getRequestsByUserId = catchAsync(async (req, res) => {
   res.status(200).json({ status: "success", data: userRequests });
 });
 
+const manageRequest = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const type = req.query.type;
+  const { status } = req.body;
+
+  const updatedRequest = await requestsSv.manageRequest(id, type, status);
+
+  res.status(200).json({ status: "success", json: updatedRequest });
+});
+
 module.exports = {
   createRequest,
   getRequests,
   getRequestsByUserId,
+  manageRequest,
 };

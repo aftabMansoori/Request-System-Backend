@@ -22,7 +22,16 @@ const allUsers = async () => {
 
 const getUserbyId = async (id) => {
   try {
-    const user = User.findById({ _id: id });
+    const user = User.findById(id).populate({
+      path: "requests",
+      select: {
+        _id: 0,
+        requestStatus: 1,
+        startDate: 1,
+        endDate: 1,
+        type: 1,
+      },
+    });
     return user;
   } catch (err) {
     throw err;
