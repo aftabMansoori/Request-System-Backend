@@ -1,17 +1,20 @@
 const { catchAsync } = require("../utils/errorHandling");
 
 const adminSv = require("../services/admin.service");
+const userSv = require("../services/users.service");
 
 const createAdmin = catchAsync(async (req, res) => {
-  const user = req.body;
+  let user = req.body;
 
   if (Object.keys(user).length !== 6) {
     throw new Error("Invalid body inputs");
   }
 
-  let adminCreated = await adminSv.addUser(user);
+  let adminCreated = await userSv.addUser(user);
+  const userData = { ...adminCreated.toObject() };
+  delete userData.password;
 
-  res.status(201).json({ status: "success", data: adminCreated });
+  res.status(201).json({ status: "success", data: userData });
 });
 
 const createFolder = catchAsync(async (req, res) => {

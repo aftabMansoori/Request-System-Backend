@@ -1,10 +1,19 @@
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 const User = mongoose.model("User");
+const Admin = mongoose.model("Admin");
 
 const addUser = async (user) => {
   try {
-    const addedUser = await User.create(user);
+    const salt = await bcrypt.genSalt(+process.env.SALT_FACTOR);
+    user.password = await bcrypt.hash(user.password, salt);
+
+    let addedUser;
+    if (user.role === "general") addedUser = await User.create(user);
+    if (user.role === "admin") addedUser = await Admin.create(user);
+
     return addedUser;
   } catch (err) {
     throw err;
@@ -38,9 +47,15 @@ const getUserbyId = async (id) => {
   }
 };
 
-const getUserbyEmail = async (email) => {
+const getUserbyEmail = async (email, type) => {
   try {
-    const user = await User.findOne({ email });
+    let user;
+    if (type === "general") {
+      user = await User.findOne({ email });
+    }
+    if (type === "admin") {
+      user = await Admin.findOne({ email });
+    }
 
     if (!user) {
       throw new Error("User does not exists");
@@ -52,9 +67,37 @@ const getUserbyEmail = async (email) => {
   }
 };
 
+const signInUser = (isMatch, user, res) => {
+  if (isMatch) {
+    const claims = {
+      role: user.role,
+      email: user.email,
+    };
+
+    jwt.sign(claims, process.env.JWT_SECRET, function (err, token) {
+      if (err) {
+        throw err;
+      }
+
+      res.status(200).json({
+        status: "success",
+        data: {
+          name: user.username,
+          email: user.email,
+          role: user.role,
+          token,
+        },
+      });
+    });
+  } else {
+    throw new Error("Password does not match");
+  }
+};
+
 module.exports = {
   addUser,
   allUsers,
   getUserbyId,
   getUserbyEmail,
+  signInUser,
 };
