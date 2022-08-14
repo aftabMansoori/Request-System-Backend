@@ -72,6 +72,7 @@ const signInUser = (isMatch, user, res) => {
     const claims = {
       role: user.role,
       email: user.email,
+      id: user._id,
     };
 
     jwt.sign(claims, process.env.JWT_SECRET, function (err, token) {

@@ -19,17 +19,17 @@ const register = catchAsync(async (req, res) => {
 });
 
 const login = catchAsync(async (req, res) => {
-  const { email, password, type } = req.body;
+  const { email, password, role } = req.body;
 
   if (!email || !password) {
     throw new Error("Email or Password is missing");
   }
 
-  if (!type) {
+  if (!role) {
     throw new Error("User type is missing");
   }
 
-  const user = await usersSv.getUserbyEmail(email, type);
+  const user = await usersSv.getUserbyEmail(email, role);
 
   const isMatch = await bcrypt.compare(password, user.password);
 
