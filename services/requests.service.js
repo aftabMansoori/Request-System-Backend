@@ -7,6 +7,14 @@ const createRequest = async (request) => {
   try {
     const user = await User.findById(request.userId);
 
+    for (let key in request) {
+      if (!!request[key] === false) {
+        if (key === "startDate") key = "start date";
+        if (key === "endDate") key = "end date";
+        throw new Error(`Please specify the ${key}`);
+      }
+    }
+
     if (!user) {
       throw new Error("User doesn't exist");
     }
@@ -47,7 +55,7 @@ const getRequestsByUserId = async (id, type) => {
       throw new Error("User does not exists");
     }
 
-    if (type) {
+    if (type !== "all") {
       userRequests = await Requests.find({ $and: [{ userId: id }, { type }] });
     } else {
       userRequests = await Requests.find({ userId: id });
@@ -76,9 +84,24 @@ const manageRequest = async (id, type, status) => {
   }
 };
 
+const deleteRequest = async (id) => {
+  try {
+    let request = await Requests.findByIdAndRemove(id);
+
+    if (request === null) {
+      throw new Error("No such request exists");
+    }
+
+    return request;
+  } catch (err) {
+    throw err;
+  }
+};
+
 module.exports = {
   createRequest,
   getRequests,
   getRequestsByUserId,
   manageRequest,
+  deleteRequest,
 };

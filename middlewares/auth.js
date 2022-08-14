@@ -15,7 +15,7 @@ const authentcate = (req, res, next) => {
 
 const authorize = (allowedRole) => {
   return (req, res, next) => {
-    const claims = res.locals;
+    const claims = res.locals.claims;
 
     if (allowedRole !== claims.role) {
       throw new Error("You are not authorized");

@@ -3,9 +3,31 @@ const router = express.Router();
 
 const requestsController = require("../controllers/requests.controller");
 
-router.post("/", requestsController.createRequest);
-router.get("/", requestsController.getRequests);
-router.get("/:id", requestsController.getRequestsByUserId);
-router.patch("/manage/:id", requestsController.manageRequest);
+const { authentcate, authorize } = require("../middlewares/auth");
+
+router.post(
+  "/",
+  authentcate,
+  authorize("general"),
+  requestsController.createRequest
+);
+router.get(
+  "/",
+  authentcate,
+  authorize("admin"),
+  requestsController.getRequests
+);
+router.get(
+  "/user-requests",
+  authentcate,
+  requestsController.getRequestsByUserId
+);
+router.patch(
+  "/manage/:id",
+  authentcate,
+  authorize("admin"),
+  requestsController.manageRequest
+);
+router.delete("/:id", authentcate, requestsController.deleteRequest);
 
 module.exports = router;

@@ -2,7 +2,10 @@ const { catchAsync } = require("../utils/errorHandling");
 const requestsSv = require("../services/requests.service");
 
 const createRequest = catchAsync(async (req, res) => {
-  const request = req.body;
+  let request = req.body;
+
+  const { id } = res.locals.claims;
+  request.userId = id;
 
   const createdRequest = await requestsSv.createRequest(request);
 
@@ -16,9 +19,11 @@ const getRequests = catchAsync(async (req, res) => {
 });
 
 const getRequestsByUserId = catchAsync(async (req, res) => {
-  const userId = req.params.id;
+  const userId = res.locals.claims.id;
   const type = req.query.type;
+
   const userRequests = await requestsSv.getRequestsByUserId(userId, type);
+
   res.status(200).json({ status: "success", data: userRequests });
 });
 
@@ -32,9 +37,18 @@ const manageRequest = catchAsync(async (req, res) => {
   res.status(200).json({ status: "success", json: updatedRequest });
 });
 
+const deleteRequest = catchAsync(async (req, res) => {
+  const requestId = req.params.id;
+
+  await requestsSv.deleteRequest(requestId);
+
+  res.status(204).json({ status: "success" });
+});
+
 module.exports = {
   createRequest,
   getRequests,
   getRequestsByUserId,
   manageRequest,
+  deleteRequest,
 };
