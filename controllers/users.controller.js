@@ -6,8 +6,8 @@ const usersSv = require("../services/users.service");
 const register = catchAsync(async (req, res) => {
   let user = req.body;
 
-  if (Object.keys(user).length !== 6) {
-    throw new Error("Invalid body inputs");
+  for (let key in user) {
+    if (!!user[key] === false) throw new Error(`${key} input is missing`);
   }
 
   const registeredUser = await usersSv.addUser(user);

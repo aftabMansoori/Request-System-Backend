@@ -13,8 +13,8 @@ const createRequest = catchAsync(async (req, res) => {
 });
 
 const getRequests = catchAsync(async (req, res) => {
-  const type = req.query.type;
-  const requests = await requestsSv.getRequests(type);
+  const { type, batch } = req.query;
+  const requests = await requestsSv.getRequests(type, batch);
   res.status(200).json({ status: "success", data: requests });
 });
 

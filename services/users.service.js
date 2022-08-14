@@ -83,7 +83,7 @@ const signInUser = (isMatch, user, res) => {
       res.status(200).json({
         status: "success",
         data: {
-          name: user.username,
+          name: user.name,
           email: user.email,
           role: user.role,
           token,

@@ -23,6 +23,8 @@ const createRequest = async (request) => {
       throw new Error("End Date is required");
     }
 
+    request.batch = user.batch;
+
     const createdRequested = await Requests.create(request);
     return createdRequested;
   } catch (err) {
@@ -30,16 +32,28 @@ const createRequest = async (request) => {
   }
 };
 
-const getRequests = async (type) => {
+const getRequests = async (type, batch) => {
   try {
     let allRequests;
-    if (type) {
-      allRequests = await Requests.find({ type });
+
+    if (type && batch) {
+      allRequests = await Requests.find({ $and: [{ batch }, { type }] });
+    } else if (type || batch) {
+      allRequests = await Requests.find({
+        $or: [
+          {
+            type: type,
+          },
+          {
+            batch: batch,
+          },
+        ],
+      });
     } else {
       allRequests = await Requests.find();
     }
 
-    return allRequests;
+    return { count: allRequests.length, requests: allRequests };
   } catch (err) {
     throw err;
   }

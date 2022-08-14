@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       required: true,
     },
-    username: {
+    name: {
       type: String,
       required: true,
     },
@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema(
     batch: {
       type: String,
       required: true,
+      enum: ["mevn-batch-1", "mevn-batch-2", "django", "ui-ux"],
     },
     phone: {
       type: Number,

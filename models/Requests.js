@@ -23,6 +23,11 @@ const requestsSchema = new mongoose.Schema(
       type: String,
       default: "Requested",
     },
+    batch: {
+      type: String,
+      required: true,
+      enum: ["mevn-batch-1", "mevn-batch-2", "django", "ui-ux"],
+    },
     reason: {
       type: String,
       required: true,
