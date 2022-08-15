@@ -23,7 +23,7 @@ router.get(
   requestsController.getRequestsByUserId
 );
 router.patch(
-  "/manage/:id",
+  "/:id",
   authentcate,
   authorize("admin"),
   requestsController.manageRequest

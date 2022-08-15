@@ -32,12 +32,14 @@ const createRequest = async (request) => {
   }
 };
 
-const getRequests = async (type, batch) => {
+const getRequests = async (type, batch = "all") => {
   try {
     let allRequests;
 
-    if (type && batch) {
-      allRequests = await Requests.find({ $and: [{ batch }, { type }] });
+    if (type && batch !== "all") {
+      allRequests = await Requests.find({
+        $and: [{ batch }, { type }],
+      });
     } else if (type || batch) {
       allRequests = await Requests.find({
         $or: [
@@ -53,7 +55,19 @@ const getRequests = async (type, batch) => {
       allRequests = await Requests.find();
     }
 
-    return { count: allRequests.length, requests: allRequests };
+    const updatedRequests = await Promise.all(
+      allRequests.map(async (request) => {
+        const user = await User.findById(request.userId);
+        const newRequest = {
+          ...request.toObject(),
+          ...{ name: user.name },
+        };
+
+        return newRequest;
+      })
+    );
+
+    return { count: allRequests.length, requests: updatedRequests };
   } catch (err) {
     throw err;
   }

@@ -22,6 +22,7 @@ const requestsSchema = new mongoose.Schema(
     requestStatus: {
       type: String,
       default: "Requested",
+      enum: ["Approved", "Rejected", "Requested"],
     },
     batch: {
       type: String,

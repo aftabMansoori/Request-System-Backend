@@ -34,7 +34,7 @@ const manageRequest = catchAsync(async (req, res) => {
 
   const updatedRequest = await requestsSv.manageRequest(id, type, status);
 
-  res.status(200).json({ status: "success", json: updatedRequest });
+  res.status(200).json({ status: "success", data: updatedRequest });
 });
 
 const deleteRequest = catchAsync(async (req, res) => {
