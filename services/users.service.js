@@ -41,6 +41,7 @@ const getUserbyId = async (id) => {
         type: 1,
       },
     });
+
     return user;
   } catch (err) {
     throw err;

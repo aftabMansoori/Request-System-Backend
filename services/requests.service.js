@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const User = mongoose.model("User");
 const Requests = mongoose.model("Requests");
+const Admin = mongoose.model("Admin");
 
 const createRequest = async (request) => {
   try {
@@ -95,12 +96,15 @@ const getRequestsByUserId = async (id, type) => {
   }
 };
 
-const manageRequest = async (id, type, status) => {
+const manageRequest = async (id, type, status, adminId) => {
   try {
     let request = await Requests.findById(id);
+    let admin = await Admin.findById(adminId);
 
     if (request && type === "leave") {
       request.requestStatus = status;
+      request.adminName = admin.name;
+
       request = await request.save();
     } else {
       throw new Error("Requests does not exists");

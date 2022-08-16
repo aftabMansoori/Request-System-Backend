@@ -32,7 +32,14 @@ const manageRequest = catchAsync(async (req, res) => {
   const type = req.query.type;
   const { status } = req.body;
 
-  const updatedRequest = await requestsSv.manageRequest(id, type, status);
+  const adminId = res.locals.claims.id;
+
+  const updatedRequest = await requestsSv.manageRequest(
+    id,
+    type,
+    status,
+    adminId
+  );
 
   res.status(200).json({ status: "success", data: updatedRequest });
 });

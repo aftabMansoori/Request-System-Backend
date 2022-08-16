@@ -11,6 +11,9 @@ const requestsSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Admin",
     },
+    adminName: {
+      type: String,
+    },
     startDate: {
       type: Date,
       default: Date.now,

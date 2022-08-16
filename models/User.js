@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: "general",
+      enum: ["general"],
       required: true,
     },
   },
