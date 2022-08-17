@@ -1,33 +1,42 @@
 const mongoose = require("mongoose");
 
 const gdapi = require("../GoogleDriveApis/GoogleDriveServices");
+const { errorHandling } = require("../utils/errorHandling");
 
 const Admin = mongoose.model("Admin");
-const Folder = mongoose.model("Folder");
 
-const createFolder = async (folderName, parentFolderId) => {
+const getVideosList = async (batch, day) => {
   try {
-    const response = await gdapi.createFolder(folderName, parentFolderId);
-
-    const createdFolder = await Folder.create({
-      folderName: response.data.name,
-      folderDriveId: response.data.id,
-      ...response.data,
-    });
-    return createdFolder;
+    const videoList = await gdapi.searchFiles(batch, day);
+    return videoList.data;
   } catch (err) {
-    throw err;
+    errorHandling(err);
   }
 };
 
-const deleteFile = async (id) => {
-  try {
-    const { folderDriveId } = await Folder.findByIdAndRemove(id);
-    await gdapi.deleteFile(folderDriveId);
-  } catch (err) {
-    throw err;
-  }
-};
+// const createFolder = async (folderName, parentFolderId) => {
+//   try {
+//     const response = await gdapi.createFolder(folderName, parentFolderId);
+
+//     const createdFolder = await Folder.create({
+//       folderName: response.data.name,
+//       folderDriveId: response.data.id,
+//       ...response.data,
+//     });
+//     return createdFolder;
+//   } catch (err) {
+//     throw err;
+//   }
+// };
+
+// const deleteFile = async (id) => {
+//   try {
+//     const { folderDriveId } = await Folder.findByIdAndRemove(id);
+//     await gdapi.deleteFile(folderDriveId);
+//   } catch (err) {
+//     throw err;
+//   }
+// };
 
 // const giveReadPermission = async (
 //   id = "1iGlLB5IlKshLcXSvBowXWDYhd5Jl4coJ",
@@ -42,6 +51,7 @@ const deleteFile = async (id) => {
 // };
 
 module.exports = {
-  createFolder,
-  deleteFile,
+  // createFolder,
+  // deleteFile,
+  getVideosList,
 };

@@ -6,35 +6,51 @@ const userSv = require("../services/users.service");
 const createAdmin = catchAsync(async (req, res) => {
   let user = req.body;
 
-  if (Object.keys(user).length !== 6) {
-    throw new Error("Invalid body inputs");
+  for (let key in user) {
+    if (typeof user[key] !== "boolean" && !!user[key] === false)
+      throw new Error(`${key} input is missing`);
   }
 
-  let adminCreated = await userSv.addUser(user);
+  const adminId = res.locals.claims.id;
+  let adminCreated = await userSv.addUser(user, adminId);
   const userData = { ...adminCreated.toObject() };
   delete userData.password;
 
   res.status(201).json({ status: "success", data: userData });
 });
 
-const createFolder = catchAsync(async (req, res) => {
-  let { folderName, parentFolderID } = req.body;
+const getVideosList = catchAsync(async (req, res) => {
+  const { batch, day } = req.query;
+  console.log(day);
 
-  const createdFolder = await adminSv.createFolder(folderName, parentFolderID);
+  if (!batch) {
+    throw new Error("Please select the batch");
+  }
 
-  res.status(201).json({ status: "success", data: createdFolder });
+  const videoList = await adminSv.getVideosList(batch, day);
+
+  res.status(200).json({ message: "success", data: videoList });
 });
 
-const deleteFile = catchAsync(async (req, res) => {
-  const fileId = req.params.id;
+// const createFolder = catchAsync(async (req, res) => {
+//   let { folderName, parentFolderID } = req.body;
 
-  await adminSv.deleteFile(fileId);
+//   const createdFolder = await adminSv.createFolder(folderName, parentFolderID);
 
-  res.status(204).json({ status: "deleted successfully" });
-});
+//   res.status(201).json({ status: "success", data: createdFolder });
+// });
+
+// const deleteFile = catchAsync(async (req, res) => {
+//   const fileId = req.params.id;
+
+//   await adminSv.deleteFile(fileId);
+
+//   res.status(204).json({ status: "deleted successfully" });
+// });
 
 module.exports = {
   createAdmin,
-  createFolder,
-  deleteFile,
+  // createFolder,
+  // deleteFile,
+  getVideosList,
 };

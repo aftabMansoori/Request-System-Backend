@@ -12,7 +12,13 @@ router.post(
   authorize("admin"),
   adminController.createAdmin
 );
-router.post("/create-folder", adminController.createFolder);
-router.delete("/:id", adminController.deleteFile);
+// router.post("/create-folder", adminController.createFolder);
+// router.delete("/:id", adminController.deleteFile);
+router.get(
+  "/get-files",
+  authentcate,
+  authorize("admin"),
+  adminController.getVideosList
+);
 
 module.exports = router;

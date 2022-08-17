@@ -71,8 +71,38 @@ const readPermission = async (fileId, email, type) => {
   });
 };
 
+const searchFiles = async (name, day) => {
+  let query;
+  if (name === "all") {
+    query = `mimeType != 'application/vnd.google-apps.folder' and trashed = false `;
+  } else if (day != "null") {
+    query = `mimeType != 'application/vnd.google-apps.folder' and name contains '${name}' and createdTime < '${day}' and trashed = false `;
+  } else {
+    query = `mimeType != 'application/vnd.google-apps.folder' and name contains '${name}' and trashed = false `;
+  }
+
+  return await new Promise((resolve, reject) => {
+    drive.files.list(
+      {
+        q: query,
+        fields: "files(id, name, webViewLink, createdTime)",
+        spaces: "drive",
+      },
+      function (err, res) {
+        if (err) {
+          console.log(err.message);
+          reject(err);
+        }
+
+        resolve(res);
+      }
+    );
+  });
+};
+
 module.exports = {
   createFolder,
   deleteFile,
   readPermission,
+  searchFiles,
 };
