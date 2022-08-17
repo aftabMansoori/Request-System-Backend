@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 require("./User");
 require("./Admin");
 require("./Requests");
-require("./Folder");
 require("./Files");
 
 const connect = async function () {

@@ -33,19 +33,85 @@ const createRequest = async (request) => {
   }
 };
 
-const getRequests = async (type, batch = "all") => {
+const getRequests = async (type, batch, status, page = 1) => {
   try {
     let allRequests;
 
-    if (type && batch !== "all") {
-      allRequests = await Requests.find({
-        $and: [{ batch }, { type }],
+    let requestStatus;
+    if (status) {
+      requestStatus = status[0].toUpperCase() + status.slice(1);
+    }
+
+    if (!!type && !!batch && !!status) {
+      if (batch === "all") {
+        allRequests = Requests.find({
+          $and: [
+            {
+              type: type,
+            },
+            {
+              requestStatus: requestStatus,
+            },
+          ],
+        });
+      } else {
+        allRequests = Requests.find({
+          $and: [
+            {
+              batch: batch,
+            },
+            {
+              type: type,
+            },
+            {
+              requestStatus: requestStatus,
+            },
+          ],
+        });
+      }
+    } else if ((type && batch) || (type && status) || (batch && status)) {
+      allRequests = Requests.find({
+        $or: [
+          {
+            $and: [
+              {
+                type: type,
+              },
+              {
+                requestStatus: requestStatus,
+              },
+            ],
+          },
+          {
+            $and: [
+              {
+                type: type,
+              },
+              {
+                batch: batch,
+              },
+            ],
+          },
+          {
+            $and: [
+              {
+                requestStatus: requestStatus,
+              },
+              {
+                batch: batch,
+              },
+            ],
+          },
+        ],
       });
-    } else if (type || batch) {
-      allRequests = await Requests.find({
+    } else if (!!type || !!batch || !!requestStatus) {
+      allRequests = Requests.find({
         $or: [
           {
             type: type,
+          },
+          {
+            requestStatus: requestStatus,
           },
           {
             batch: batch,
@@ -53,11 +119,16 @@ const getRequests = async (type, batch = "all") => {
         ],
       });
     } else {
-      allRequests = await Requests.find();
+      allRequests = Requests.find();
     }
 
-    const updatedRequests = await Promise.all(
-      allRequests.map(async (request) => {
+    const skipWorkshops = 10 * (page - 1);
+    let next = false;
+
+    let requests = await allRequests.skip(skipWorkshops).limit(10);
+
+    const updatedRequest = await Promise.all(
+      requests.map(async (request) => {
         const user = await User.findById(request.userId);
         const newRequest = {
           ...request.toObject(),
@@ -68,7 +139,25 @@ const getRequests = async (type, batch = "all") => {
       })
     );
 
-    return { count: allRequests.length, requests: updatedRequests };
+    if (updatedRequest.length >= 3) next = true;
+    else if (requests.length === 0) {
+      next = false;
+      return {
+        page,
+        next,
+        requests: [],
+        message: "No more requests exists",
+      };
+    } else {
+      next = false;
+    }
+
+    return {
+      count: updatedRequest.length,
+      next,
+      page,
+      requests: updatedRequest,
+    };
   } catch (err) {
     throw err;
   }

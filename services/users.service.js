@@ -5,8 +5,16 @@ const bcrypt = require("bcrypt");
 const User = mongoose.model("User");
 const Admin = mongoose.model("Admin");
 
-const addUser = async (user) => {
+const addUser = async (user, adminId) => {
   try {
+    if (user.role === "admin") {
+      const admin = await Admin.findById(adminId);
+
+      if (!admin.canCreate) {
+        throw new Error("You are not aurhorized to create other admins");
+      }
+    }
+
     const salt = await bcrypt.genSalt(+process.env.SALT_FACTOR);
     user.password = await bcrypt.hash(user.password, salt);
 
@@ -81,13 +89,24 @@ const signInUser = (isMatch, user, res) => {
         throw err;
       }
 
+      let signInUser = {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        token,
+      };
+
+      if (user.role === "admin") {
+        signInUser = {
+          ...signInUser,
+          canCreate: user.canCreate,
+        };
+      }
+
       res.status(200).json({
         status: "success",
         data: {
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          token,
+          ...signInUser,
         },
       });
     });
