@@ -197,18 +197,21 @@ const manageRequest = async (id, type, status, adminId, video) => {
       request.requestStatus = status;
       request.adminName = admin.name;
 
-      const user = await User.findById(request.userId);
-
-      const response = await gdapi.readPermission(video.id, user.email, "user");
-      console.log(response);
-      console.log("success");
-
       request = await request.save();
 
       return request;
     } else if (request && type === "video") {
       request.requestStatus = status;
       request.adminName = admin.name;
+
+      if (status === "rejected") {
+        request = await request.save();
+        return request;
+      }
+
+      const user = await User.findById(request.userId);
+
+      await gdapi.readPermission(video.id, user.email, "user");
 
       const fileShared = await Files.create({
         fileName: video.name,
