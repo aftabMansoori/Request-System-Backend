@@ -49,9 +49,17 @@ const getUserbyId = catchAsync(async (req, res) => {
   res.status(200).json({ status: "success", data: user });
 });
 
+const getSharedVideos = catchAsync(async (req, res) => {
+  const userId = res.locals.claims.id;
+  const sharedFiles = await usersSv.getSharedVideos(userId);
+
+  res.status(200).json({ status: "success", data: sharedFiles });
+});
+
 module.exports = {
   register,
   login,
   getAllUsers,
   getUserbyId,
+  getSharedVideos,
 };

@@ -13,6 +13,7 @@ router.get(
   authorize("admin"),
   usersController.getAllUsers
 );
+router.get("/files", authentcate, usersController.getSharedVideos);
 router.get("/:id", authentcate, usersController.getUserbyId);
 
 module.exports = router;

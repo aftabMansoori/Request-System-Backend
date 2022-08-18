@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 
 const User = mongoose.model("User");
 const Admin = mongoose.model("Admin");
+const Files = mongoose.model("Files");
 
 const addUser = async (user, adminId) => {
   try {
@@ -115,10 +116,31 @@ const signInUser = (isMatch, user, res) => {
   }
 };
 
+const getSharedVideos = async (id) => {
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      throw new Error("User does not exists");
+    }
+
+    const sharedFile = await Files.find({ userId: id });
+
+    if (!sharedFile) {
+      return "No files is shared with you yet";
+    }
+
+    return sharedFile;
+  } catch (err) {
+    throw err;
+  }
+};
+
 module.exports = {
   addUser,
   allUsers,
   getUserbyId,
   getUserbyEmail,
   signInUser,
+  getSharedVideos,
 };

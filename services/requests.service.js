@@ -204,7 +204,7 @@ const manageRequest = async (id, type, status, adminId, video) => {
       request.requestStatus = status;
       request.adminName = admin.name;
 
-      if (status === "rejected") {
+      if (status === "Rejected" || status === "rejected") {
         request = await request.save();
         return request;
       }
@@ -216,8 +216,11 @@ const manageRequest = async (id, type, status, adminId, video) => {
       const fileShared = await Files.create({
         fileName: video.name,
         fileDriveId: video.id,
+        createdTime: video.createdTime,
         requestsId: id,
         videoLink: video.webViewLink,
+        userId: user.id,
+        thumbnail: video.thumbnailLink,
       });
 
       request = await request.save();
@@ -244,6 +247,10 @@ const deleteRequest = async (id) => {
     throw err;
   }
 };
+
+// const getVideosbyRequestId = async (id) =>  {
+
+// }
 
 module.exports = {
   createRequest,

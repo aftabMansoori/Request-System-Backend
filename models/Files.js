@@ -10,13 +10,24 @@ const fileSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    videoLink: {
+      type: String,
+      required: true,
+    },
+    createdTime: {
+      type: Date,
+      required: true,
+    },
+    thumbnail: {
+      type: String,
+    },
     requestsId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Requests",
     },
-    videoLink: {
-      type: String,
-      required: true,
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      Ref: "User",
     },
   },
   { timestamps: true }

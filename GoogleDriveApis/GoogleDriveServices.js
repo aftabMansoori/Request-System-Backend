@@ -75,8 +75,10 @@ const readPermission = async (fileId, email, type) => {
 
 const searchFiles = async (name, day) => {
   let query;
-  if (name === "all") {
-    query = `mimeType != 'application/vnd.google-apps.folder' and trashed = false `;
+  if (name === "all" && day != "null") {
+    query = `mimeType != 'application/vnd.google-apps.folder' and createdTime  < '${day}' and trashed = false `;
+  } else if (name === "all") {
+    query = `mimeType != 'application/vnd.google-apps.folder' and trashed = false`;
   } else if (day != "null") {
     query = `mimeType != 'application/vnd.google-apps.folder' and name contains '${name}' and createdTime < '${day}' and trashed = false `;
   } else {
@@ -87,7 +89,7 @@ const searchFiles = async (name, day) => {
     drive.files.list(
       {
         q: query,
-        fields: "files(id, name, webViewLink, createdTime)",
+        fields: "files(id, name, webViewLink, createdTime, thumbnailLink)",
         spaces: "drive",
       },
       function (err, res) {
