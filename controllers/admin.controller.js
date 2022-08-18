@@ -21,7 +21,6 @@ const createAdmin = catchAsync(async (req, res) => {
 
 const getVideosList = catchAsync(async (req, res) => {
   const { batch, day } = req.query;
-  console.log(day);
 
   if (!batch) {
     throw new Error("Please select the batch");

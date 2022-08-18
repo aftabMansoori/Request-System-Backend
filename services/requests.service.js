@@ -1,8 +1,12 @@
 const mongoose = require("mongoose");
 
+const gdapi = require("../GoogleDriveApis/GoogleDriveServices");
+const { errorHandling } = require("../utils/errorHandling");
+
 const User = mongoose.model("User");
 const Requests = mongoose.model("Requests");
 const Admin = mongoose.model("Admin");
+const Files = mongoose.model("Files");
 
 const createRequest = async (request) => {
   try {
@@ -181,27 +185,44 @@ const getRequestsByUserId = async (id, type) => {
 
     return userRequests;
   } catch (err) {
-    throw err;
+    errorHandling(err);
   }
 };
 
-const manageRequest = async (id, type, status, adminId) => {
+const manageRequest = async (id, type, status, adminId, video) => {
   try {
     let request = await Requests.findById(id);
     let admin = await Admin.findById(adminId);
-
     if (request && type === "leave") {
       request.requestStatus = status;
       request.adminName = admin.name;
 
+      const user = await User.findById(request.userId);
+
+      const response = await gdapi.readPermission(video.id, user.email, "user");
+      console.log(response);
+      console.log("success");
+
       request = await request.save();
+
+      return request;
     } else if (request && type === "video") {
-      console.log(id, status, adminId, userId);
+      request.requestStatus = status;
+      request.adminName = admin.name;
+
+      const fileShared = await Files.create({
+        fileName: video.name,
+        fileDriveId: video.id,
+        requestsId: id,
+        videoLink: video.webViewLink,
+      });
+
+      request = await request.save();
+
+      return { request, fileShared };
     } else {
       throw new Error("Requests does not exists");
     }
-
-    return request;
   } catch (err) {
     throw err;
   }

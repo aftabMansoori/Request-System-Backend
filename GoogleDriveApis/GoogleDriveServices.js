@@ -1,6 +1,4 @@
 const { google } = require("googleapis");
-const fs = require("fs");
-const path = require("path");
 
 const credentials = require("./credentials.json");
 
@@ -52,6 +50,7 @@ const deleteFile = async (fileId) => {
 };
 
 const readPermission = async (fileId, email, type) => {
+  console.log(fileId, email, type);
   return await new Promise((resolve, reject) => {
     drive.permissions.create(
       {
@@ -64,7 +63,10 @@ const readPermission = async (fileId, email, type) => {
         },
       },
       function (err, res) {
-        if (err) reject(err);
+        if (err) {
+          console.log(err);
+          reject(err);
+        }
         resolve(res);
       }
     );

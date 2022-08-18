@@ -30,7 +30,14 @@ const getRequestsByUserId = catchAsync(async (req, res) => {
 const manageRequest = catchAsync(async (req, res) => {
   const id = req.params.id;
   const type = req.query.type;
-  const { status } = req.body;
+
+  let status, video;
+  if (type === "leave") {
+    status = req.body.status;
+  } else {
+    status = req.body.status;
+    video = req.body.video;
+  }
 
   const adminId = res.locals.claims.id;
 
@@ -38,7 +45,8 @@ const manageRequest = catchAsync(async (req, res) => {
     id,
     type,
     status,
-    adminId
+    adminId,
+    video
   );
 
   res.status(200).json({ status: "success", data: updatedRequest });
