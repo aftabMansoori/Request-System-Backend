@@ -195,6 +195,8 @@ const manageRequest = async (id, type, status, adminId) => {
       request.adminName = admin.name;
 
       request = await request.save();
+    } else if (request && type === "video") {
+      console.log(id, status, adminId, userId);
     } else {
       throw new Error("Requests does not exists");
     }
