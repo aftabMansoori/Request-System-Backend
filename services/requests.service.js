@@ -248,10 +248,6 @@ const deleteRequest = async (id) => {
   }
 };
 
-// const getVideosbyRequestId = async (id) =>  {
-
-// }
-
 module.exports = {
   createRequest,
   getRequests,

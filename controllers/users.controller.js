@@ -37,7 +37,9 @@ const login = catchAsync(async (req, res) => {
 });
 
 const getAllUsers = catchAsync(async (req, res) => {
-  const allUsers = await usersSv.allUsers();
+  const { batch } = req.query;
+
+  const allUsers = await usersSv.allUsers(batch);
 
   res.status(200).json({ status: "success", data: allUsers });
 });
