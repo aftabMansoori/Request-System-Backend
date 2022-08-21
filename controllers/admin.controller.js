@@ -31,25 +31,23 @@ const getVideosList = catchAsync(async (req, res) => {
   res.status(200).json({ message: "success", data: videoList });
 });
 
-// const createFolder = catchAsync(async (req, res) => {
-//   let { folderName, parentFolderID } = req.body;
+const getStats = catchAsync(async (req, res) => {
+  const stats = await adminSv.getStats();
 
-//   const createdFolder = await adminSv.createFolder(folderName, parentFolderID);
+  res.status(200).json({ message: "success", data: stats });
+});
 
-//   res.status(201).json({ status: "success", data: createdFolder });
-// });
+const deleteUser = catchAsync(async (req, res) => {
+  const userId = req.params.id;
 
-// const deleteFile = catchAsync(async (req, res) => {
-//   const fileId = req.params.id;
+  await adminSv.deleteUser(userId);
 
-//   await adminSv.deleteFile(fileId);
-
-//   res.status(204).json({ status: "deleted successfully" });
-// });
+  res.status(204).json({ status: "success" });
+});
 
 module.exports = {
   createAdmin,
-  // createFolder,
-  // deleteFile,
   getVideosList,
+  getStats,
+  deleteUser,
 };
