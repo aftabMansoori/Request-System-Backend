@@ -29,10 +29,17 @@ const addUser = async (user, adminId) => {
   }
 };
 
-const allUsers = async () => {
+const allUsers = async (batch) => {
   try {
-    const allUsers = await User.find();
-    return allUsers;
+    let allUsers;
+
+    if (!batch || batch === "all") {
+      allUsers = await User.find();
+    } else {
+      allUsers = await User.find({ batch });
+    }
+
+    return { users: allUsers };
   } catch (err) {
     throw err;
   }
